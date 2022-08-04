@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request, send_file
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from os import remove
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -62,6 +63,19 @@ def get_img(imgid):
     return send_file('./static/img/{}'.format(imgid), mimetype='image/jpeg')
 
 
+@app.route('/api/request/delete', methods=['POST'])
+def delete_data():
+    sample_id = (request.get_json())['sampleId']
+    on_delete_data = Example.query.filter_by(sampleId=sample_id).first()
+    img_list = on_delete_data.imageId
+    if img_list is not None and img_list:
+        for img in img_list:
+            remove('./static/img/{}'.format(img))
+    db.session.delete(on_delete_data)
+    db.session.commit()
+    return {'delete_status': 'success'}
+
+
 @app.route('/api/upload/base', methods=['POST'])
 def upload_base():
     form = request.get_json()
@@ -71,14 +85,14 @@ def upload_base():
     db.session.add(new_record)
     db.session.commit()
 
-    return request.get_json()
+    return {'upload_base_status': 'success'}
 
 
 @app.route('/api/upload/img', methods=['POST'])
 def upload_img():
     file = request.files.get('fileToUpload')
-    file.save('./static/img/'+file.filename)
-    return 'hello'
+    file.save('./static/img/' + file.filename)
+    return {'upload_img_status': 'success'}
 
 
 if __name__ == '__main__':
