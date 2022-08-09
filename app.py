@@ -3,6 +3,7 @@ from flask import request, send_file
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from os import remove
+from os.path import exists
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -70,7 +71,8 @@ def delete_data():
     img_list = on_delete_data.imageId
     if img_list is not None and img_list:
         for img in img_list:
-            remove('./static/img/{}'.format(img))
+            if exists('./static/img/{}'.format(img)):
+                remove('./static/img/{}'.format(img))
     db.session.delete(on_delete_data)
     db.session.commit()
     return {'delete_status': 'success'}
