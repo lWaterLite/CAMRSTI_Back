@@ -51,6 +51,70 @@ class Example(db.Model):
         }
 
 
+class metalPhase(db.Model):
+    __tablename__ = 'metalphase'
+    sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
+    metalPhase = db.Column('metalPhase', db.Unicode(2))
+    sampleFullImg = db.Column('sampleFullImg', db.Unicode(20))
+    sfDescription = db.Column('sfDescription', db.UnicodeText)
+    sfEquipment = db.Column('sfEquipment', db.Unicode(10))
+    sfZoom = db.Column('sfZoom', db.Unicode(10))
+    sfPhotoMod = db.Column('sfPhotoMod', db.Unicode(10))
+    mpImage = db.Column('mpImage', db.JSON)
+
+    def to_json(self):
+        return {
+            'sampleId': self.sampleId,
+            'metalPhase': self.metalPhase,
+            'sampleFullImg': self.sampleFullImg,
+            'sfDescription': self.sfDescription,
+            'sfEquipment': self.sfEquipment,
+            'sfZoom': self.sfZoom,
+            'sfPhotoMod': self.sfPhotoMod,
+            'mpImage': self.mpImage
+        }
+
+
+class minePhase(db.Model):
+    __tablename__ = 'minephase'
+    sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
+    minePhase = db.Column('minePhase', db.Unicode(2))
+    mpFullImage = db.Column('mpFullImage', db.Unicode(20))
+    mpDescription = db.Column('mpDescription', db.UnicodeText)
+    mpZoom = db.Column('mpZoom', db.Unicode(10))
+    mpMod = db.Column('mpMod', db.Unicode(10))
+    mpEquipment = db.Column('mpEquipment', db.Unicode(15))
+    mpImg = db.Column('mpImg', db.JSON)
+
+    def to_json(self):
+        return {
+            'sampleId': self.sampleId,
+            'minePhase': self.minePhase,
+            'mpFullImage': self.mpFullImage,
+            'mpDescription': self.mpDescription,
+            'mpZoom': self.mpZoom,
+            'mpMod': self.mpMod,
+            'mpEquipment': self.mpEquipment,
+            'mpImg': self.mpImg
+        }
+
+
+class omGraphic(db.Model):
+    __tablename__ = 'om_graphic'
+    imageIndex = db.Column('imageIndex', db.Unicode(30))
+    omImgDescription = db.Column('omImgDescription', db.UnicodeText)
+    omZoom = db.Column('omZoom', db.Unicode(10))
+    omMod = db.Column('omMod', db.Unicode(20))
+
+    def to_json(self):
+        return {
+            'imageIndex': self.imageIndex,
+            'omImgDescription': self.omImgDescription,
+            'omZoom': self.omZoom,
+            'omMod': self.omMod
+        }
+
+
 @app.route('/api/request/base', methods=['GET'])
 def get_base():  # put application's code here
     examples = Example.query.all()
