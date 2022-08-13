@@ -51,67 +51,93 @@ class Example(db.Model):
         }
 
 
-class metalPhase(db.Model):
+class MetalPhase(db.Model):
     __tablename__ = 'metalphase'
     sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
     metalPhase = db.Column('metalPhase', db.Unicode(2))
-    sampleFullImg = db.Column('sampleFullImg', db.Unicode(20))
+    sfFullImg = db.Column('sfFullImg', db.Unicode(20))
     sfDescription = db.Column('sfDescription', db.UnicodeText)
     sfEquipment = db.Column('sfEquipment', db.Unicode(10))
-    sfZoom = db.Column('sfZoom', db.Unicode(10))
-    sfPhotoMod = db.Column('sfPhotoMod', db.Unicode(10))
-    mpImage = db.Column('mpImage', db.JSON)
+    sfZoom = db.Column('sfZoom', db.Unicode(5))
+    sfPhotoMod = db.Column('sfPhotoMod', db.Unicode(4))
+    sfImgList = db.Column('sfImgList', db.JSON)
 
     def to_json(self):
         return {
             'sampleId': self.sampleId,
             'metalPhase': self.metalPhase,
-            'sampleFullImg': self.sampleFullImg,
+            'sfFullImg': self.sfFullImg,
             'sfDescription': self.sfDescription,
             'sfEquipment': self.sfEquipment,
             'sfZoom': self.sfZoom,
             'sfPhotoMod': self.sfPhotoMod,
-            'mpImage': self.mpImage
+            'sfImgList': self.sfImgList
         }
 
 
-class minePhase(db.Model):
+class MinePhase(db.Model):
     __tablename__ = 'minephase'
     sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
     minePhase = db.Column('minePhase', db.Unicode(2))
-    mpFullImage = db.Column('mpFullImage', db.Unicode(20))
+    mpFullImg = db.Column('mpFullImg', db.Unicode(20))
     mpDescription = db.Column('mpDescription', db.UnicodeText)
-    mpZoom = db.Column('mpZoom', db.Unicode(10))
-    mpMod = db.Column('mpMod', db.Unicode(10))
-    mpEquipment = db.Column('mpEquipment', db.Unicode(15))
-    mpImg = db.Column('mpImg', db.JSON)
+    mpEquipment = db.Column('mpEquipment', db.Unicode(10))
+    mpZoom = db.Column('mpZoom', db.Unicode(5))
+    mpPhotoMod = db.Column('mpPhotoMod', db.Unicode(4))
+    mpImgList = db.Column('mpImgList', db.JSON)
 
     def to_json(self):
         return {
             'sampleId': self.sampleId,
             'minePhase': self.minePhase,
-            'mpFullImage': self.mpFullImage,
+            'mpFullImg': self.mpFullImg,
             'mpDescription': self.mpDescription,
-            'mpZoom': self.mpZoom,
-            'mpMod': self.mpMod,
             'mpEquipment': self.mpEquipment,
-            'mpImg': self.mpImg
+            'mpZoom': self.mpZoom,
+            'mpPhotoMod': self.mpPhotoMod,
+            'mpImgList': self.mpImgList
         }
 
 
-class omGraphic(db.Model):
+class ElectronMicroPhase(db.Model):
+    __tablename__ = 'electron_micro'
+    sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
+    emPhase = db.Column('emPhase', db.Unicode(2))
+    emFullImg = db.Column('emFullImg', db.Unicode(20))
+    emDescription = db.Column('emDescription', db.UnicodeText)
+    emEquipment = db.Column('emEquipment', db.Unicode(10))
+    emZoom = db.Column('emZoom', db.Unicode(5))
+    emPhotoMod = db.Column('emPhotoMod', db.Unicode(4))
+    emImgList = db.Column('emImgList', db.JSON)
+
+    def to_json(self):
+        return {
+            'sampleId': self.sampleId,
+            'emPhase': self.emPhase,
+            'emFullImg': self.emFullImg,
+            'emDescription': self.emDescription,
+            'emZoom': self.emZoom,
+            'emPhotoMod': self.emPhotoMod,
+            'emEquipment': self.emEquipment,
+            'emImgList': self.emImgList
+        }
+
+
+class PhaseGraphic(db.Model):
     __tablename__ = 'om_graphic'
-    imageIndex = db.Column('imageIndex', db.Unicode(30), primary_key=True)
-    omImgDescription = db.Column('omImgDescription', db.UnicodeText)
-    omZoom = db.Column('omZoom', db.Unicode(10))
-    omMod = db.Column('omMod', db.Unicode(20))
+    imageIndex = db.Column('imageIndex', db.Unicode(20), primary_key=True)
+    omDescription = db.Column('omDescription', db.UnicodeText)
+    omEquipment = db.Column('omEquipment', db.Unicode(10))
+    omZoom = db.Column('omZoom', db.Unicode(5))
+    omPhotoMod = db.Column('omPhotoMod', db.Unicode(4))
 
     def to_json(self):
         return {
             'imageIndex': self.imageIndex,
-            'omImgDescription': self.omImgDescription,
+            'omDescription': self.omDescription,
+            'omEquipment': self.omEquipment,
             'omZoom': self.omZoom,
-            'omMod': self.omMod
+            'omPhotoMod': self.omMod
         }
 
 
@@ -120,6 +146,18 @@ def get_base():  # put application's code here
     examples = Example.query.all()
     t = {str(i): examples[i].to_json() for i in range(len(examples))}
     t["length"] = str(len(examples))
+    return t
+
+
+@app.route('/api/request/phase/<sampleId>', methods=['GET'])
+def get_oom(sampleId):
+    metal_phase = MetalPhase.query.filter_by(sampleId=sampleId).first()
+    mine_phase = MinePhase.query.filter_by(sampleId=sampleId).first()
+    em_phase = ElectronMicroPhase.query.filter_by(sampleId=sampleId).first()
+    t = {'metalPhaseData': metal_phase.to_json(),
+         'minePhaseData': mine_phase.to_json(),
+         'emPhaseData': em_phase.to_json()
+         }
     return t
 
 
