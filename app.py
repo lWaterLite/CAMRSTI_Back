@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from os import remove
 from os.path import exists
+from templates.table_structure import MetalPhase, MinePhase, ElectronMicroPhase, PhysicalPorosity, ExperimentData
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -51,96 +52,6 @@ class Example(db.Model):
         }
 
 
-class MetalPhase(db.Model):
-    __tablename__ = 'metalphase'
-    sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
-    metalPhase = db.Column('metalPhase', db.Unicode(2))
-    sfFullImg = db.Column('sfFullImg', db.Unicode(20))
-    sfDescription = db.Column('sfDescription', db.UnicodeText)
-    sfEquipment = db.Column('sfEquipment', db.Unicode(10))
-    sfZoom = db.Column('sfZoom', db.Unicode(5))
-    sfPhotoMod = db.Column('sfPhotoMod', db.Unicode(4))
-    sfImgList = db.Column('sfImgList', db.JSON)
-
-    def to_json(self):
-        return {
-            'sampleId': self.sampleId,
-            'metalPhase': self.metalPhase,
-            'sfFullImg': self.sfFullImg,
-            'sfDescription': self.sfDescription,
-            'sfEquipment': self.sfEquipment,
-            'sfZoom': self.sfZoom,
-            'sfPhotoMod': self.sfPhotoMod,
-            'sfImgList': self.sfImgList
-        }
-
-
-class MinePhase(db.Model):
-    __tablename__ = 'minephase'
-    sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
-    minePhase = db.Column('minePhase', db.Unicode(2))
-    mpFullImg = db.Column('mpFullImg', db.Unicode(20))
-    mpDescription = db.Column('mpDescription', db.UnicodeText)
-    mpEquipment = db.Column('mpEquipment', db.Unicode(10))
-    mpZoom = db.Column('mpZoom', db.Unicode(5))
-    mpPhotoMod = db.Column('mpPhotoMod', db.Unicode(4))
-    mpImgList = db.Column('mpImgList', db.JSON)
-
-    def to_json(self):
-        return {
-            'sampleId': self.sampleId,
-            'minePhase': self.minePhase,
-            'mpFullImg': self.mpFullImg,
-            'mpDescription': self.mpDescription,
-            'mpEquipment': self.mpEquipment,
-            'mpZoom': self.mpZoom,
-            'mpPhotoMod': self.mpPhotoMod,
-            'mpImgList': self.mpImgList
-        }
-
-
-class ElectronMicroPhase(db.Model):
-    __tablename__ = 'electron_micro'
-    sampleId = db.Column('sampleId', db.Unicode(20), primary_key=True)
-    emPhase = db.Column('emPhase', db.Unicode(2))
-    emFullImg = db.Column('emFullImg', db.Unicode(20))
-    emDescription = db.Column('emDescription', db.UnicodeText)
-    emEquipment = db.Column('emEquipment', db.Unicode(10))
-    emZoom = db.Column('emZoom', db.Unicode(5))
-    emPhotoMod = db.Column('emPhotoMod', db.Unicode(4))
-    emImgList = db.Column('emImgList', db.JSON)
-
-    def to_json(self):
-        return {
-            'sampleId': self.sampleId,
-            'emPhase': self.emPhase,
-            'emFullImg': self.emFullImg,
-            'emDescription': self.emDescription,
-            'emZoom': self.emZoom,
-            'emPhotoMod': self.emPhotoMod,
-            'emEquipment': self.emEquipment,
-            'emImgList': self.emImgList
-        }
-
-
-class PhaseGraphic(db.Model):
-    __tablename__ = 'om_graphic'
-    imageIndex = db.Column('imageIndex', db.Unicode(20), primary_key=True)
-    omDescription = db.Column('omDescription', db.UnicodeText)
-    omEquipment = db.Column('omEquipment', db.Unicode(10))
-    omZoom = db.Column('omZoom', db.Unicode(5))
-    omPhotoMod = db.Column('omPhotoMod', db.Unicode(4))
-
-    def to_json(self):
-        return {
-            'imageIndex': self.imageIndex,
-            'omDescription': self.omDescription,
-            'omEquipment': self.omEquipment,
-            'omZoom': self.omZoom,
-            'omPhotoMod': self.omMod
-        }
-
-
 @app.route('/api/request/base', methods=['GET'])
 def get_base():  # put application's code here
     examples = Example.query.all()
@@ -154,10 +65,21 @@ def get_oom(sampleId):
     metal_phase = MetalPhase.query.filter_by(sampleId=sampleId).first()
     mine_phase = MinePhase.query.filter_by(sampleId=sampleId).first()
     em_phase = ElectronMicroPhase.query.filter_by(sampleId=sampleId).first()
+    physical_porosity = PhysicalPorosity.query.filter_by(sampleId=sampleId).first()
     t = {'metalPhaseData': metal_phase.to_json(),
          'minePhaseData': mine_phase.to_json(),
-         'emPhaseData': em_phase.to_json()
+         'emPhaseData': em_phase.to_json(),
+         'physicalPorosity': physical_porosity.to_json()
          }
+    return t
+
+
+@app.route('/api/request/experiment/<sampleId>', methods=['GET'])
+def get_experiment(sampleId):
+    t = {}
+    experiment_data_all = ExperimentData.query.filter_by(sampleId=sampleId).all()
+    for experiment_data in experiment_data_all:
+        t[experiment_data.experimentId] = experiment_data.to_json()
     return t
 
 
