@@ -130,8 +130,6 @@ class ExperimentData(db.Model):
 
     def to_json(self):
         return {
-            'experimentId': self.experimentId,
-            'sampleId': self.sampleId,
             'mineralContent': self.mineralContent,
             'XRDContent': self.XRDContent,
             'chemicalContent': self.chemicalContent,

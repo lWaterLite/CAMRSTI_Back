@@ -79,7 +79,12 @@ def get_experiment(sampleId):
     t = {}
     experiment_data_all = ExperimentData.query.filter_by(sampleId=sampleId).all()
     for experiment_data in experiment_data_all:
-        t[experiment_data.experimentId] = experiment_data.to_json()
+        data = experiment_data.to_json()
+        data['mineralContent'][u'实验编号'] = experiment_data.experimentId
+        data['XRDContent'][u'实验编号'] = experiment_data.experimentId
+        data['chemicalContent'][u'实验编号'] = experiment_data.experimentId
+        data['thermalPerform'][u'实验编号'] = experiment_data.experimentId
+        t[experiment_data.experimentId] = data
     return t
 
 
