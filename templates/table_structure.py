@@ -20,6 +20,16 @@ class MetalPhase(db.Model):
     sfPhotoMod = db.Column('sfPhotoMod', db.Unicode(4))
     sfImgList = db.Column('sfImgList', db.JSON)
 
+    def __init__(self, sampleId, metalPhase, sfFullImg, sfDescription, sfEquipment, sfZoom, sfPhotoMod, sfImgList):
+        self.sampleId = sampleId
+        self.metalPhase = metalPhase
+        self.sfFullImg = sfFullImg
+        self.sfDescription = sfDescription
+        self.sfEquipment = sfEquipment
+        self.sfZoom = sfZoom
+        self.sfPhotoMod = sfPhotoMod
+        self.sfImgList = sfImgList
+
     def to_json(self):
         return {
             'sampleId': self.sampleId,

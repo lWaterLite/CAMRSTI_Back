@@ -119,6 +119,70 @@ def upload_base():
     return {'upload_base_status': 'success'}
 
 
+@app.route('/api/upload/phase/metal', methods=['POST'])
+def upload_phase_metal():
+    metal_phase_data = request.get_json()
+    db.session.query(MetalPhase).filter(MetalPhase.sampleId == metal_phase_data['sampleId']).update({
+        'metalPhase': metal_phase_data['metalPhase'],
+        'sfFullImg': metal_phase_data['sfFullImg'],
+        'sfDescription': metal_phase_data['sfDescription'],
+        'sfEquipment': metal_phase_data['sfEquipment'],
+        'sfZoom': metal_phase_data['sfZoom'],
+        'sfPhotoMod': metal_phase_data['sfPhotoMod'],
+        'sfImgList': metal_phase_data['sfImgList']
+    })
+    db.session.commit()
+
+    return {'status_code': 200}
+
+
+@app.route('/api/upload/phase/mine', methods=['POST'])
+def upload_phase_mine():
+    mine_phase_data = request.get_json()
+    db.session.query(MinePhase).filter(MinePhase.sampleId == mine_phase_data['sampleId']).update({
+        'minePhase': mine_phase_data['minePhase'],
+        'mpFullImg': mine_phase_data['mpFullImg'],
+        'mpDescription': mine_phase_data['mpDescription'],
+        'mpEquipment': mine_phase_data['mpEquipment'],
+        'mpZoom': mine_phase_data['mpZoom'],
+        'mpPhotoMod': mine_phase_data['mpPhotoMod'],
+        'mpImgList': mine_phase_data['mpImgList']
+    })
+    db.session.commit()
+
+    return {'status_code': 200}
+
+
+@app.route('/api/upload/phase/em', methods=['POST'])
+def upload_phase_em():
+    em_phase_data = request.get_json()
+    db.session.query(ElectronMicroPhase).filter(ElectronMicroPhase.sampleId == em_phase_data['sampleId']).update({
+        'emPhase': em_phase_data['emPhase'],
+        'emFullImg': em_phase_data['emFullImg'],
+        'emDescription': em_phase_data['emDescription'],
+        'emEquipment': em_phase_data['emEquipment'],
+        'emZoom': em_phase_data['emZoom'],
+        'emPhotoMod': em_phase_data['emPhotoMod'],
+        'emImgList': em_phase_data['emImgList']
+    })
+    db.session.commit()
+
+    return {'status_code': 200}
+
+
+@app.route('/api/upload/physical_porosity', methods=['POST'])
+def upload_physical_porosity():
+    physical_porosity = request.get_json()
+    db.session.query(PhysicalPorosity).filter(PhysicalPorosity.sampleId == physical_porosity['sampleId']).update({
+        'apparentPorosity': physical_porosity['apparentPorosity'],
+        'trueDensity': physical_porosity['trueDensity'],
+        'waterAbsorption': physical_porosity['waterAbsorption']
+    })
+    db.session.commit()
+
+    return {'status_code': 200}
+
+
 @app.route('/api/upload/img', methods=['POST'])
 def upload_img():
     file = request.files.get('fileToUpload')
