@@ -102,13 +102,28 @@ class PhaseGraphic(db.Model):
     omZoom = db.Column('omZoom', db.Unicode(5))
     omPhotoMod = db.Column('omPhotoMod', db.Unicode(4))
 
+    def __init__(self, imageIndex, omDescription=None, omEquipment=None, omZoom=None, omPhotoMod=None):
+        if omDescription is None:
+            omDescription = u'无'
+        if omEquipment is None:
+            omEquipment = u'无'
+        if omZoom is None:
+            omZoom = u'无'
+        if omPhotoMod is None:
+            omPhotoMod = u'无'
+        self.imageIndex = imageIndex
+        self.omDescription = omDescription
+        self.omEquipment = omEquipment
+        self.omZoom = omZoom
+        self.omPhotoMod = omPhotoMod
+
     def to_json(self):
         return {
             'imageIndex': self.imageIndex,
             'omDescription': self.omDescription,
             'omEquipment': self.omEquipment,
             'omZoom': self.omZoom,
-            'omPhotoMod': self.omMod
+            'omPhotoMod': self.omPhotoMod
         }
 
 
@@ -137,6 +152,23 @@ class ExperimentData(db.Model):
     XRDContent = db.Column('XRDContent', db.JSON)
     chemicalContent = db.Column('chemicalContent', db.JSON)
     thermalPerform = db.Column('thermalPerform', db.JSON)
+
+    def __init__(self, experimentId, sampleId, mineralContent=None, XRFContent=None, chemicalContent=None,
+                 thermalPerform=None):
+        if thermalPerform is None:
+            thermalPerform = {}
+        if chemicalContent is None:
+            chemicalContent = {}
+        if XRFContent is None:
+            XRFContent = {}
+        if mineralContent is None:
+            mineralContent = {}
+        self.experimentId = experimentId
+        self.sampleId = sampleId
+        self.mineralContent = mineralContent
+        self.XRDContent = XRFContent
+        self.chemicalContent = chemicalContent
+        self.thermalPerform = thermalPerform
 
     def to_json(self):
         return {

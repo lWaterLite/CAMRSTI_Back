@@ -4,7 +4,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from os import remove
 from os.path import exists
-from templates.table_structure import MetalPhase, MinePhase, ElectronMicroPhase, PhysicalPorosity, ExperimentData
+from templates.table_structure import MetalPhase, MinePhase, ElectronMicroPhase, PhysicalPorosity, ExperimentData, \
+    PhaseGraphic
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -88,6 +89,19 @@ def get_experiment(sampleId):
     return t
 
 
+@app.route('/api/request/graphic/<imageIndex>', methods=['GET'])
+def get_graphic(imageIndex):
+    graphic_data = PhaseGraphic.query.filter_by(imageIndex=imageIndex).first()
+    t = {
+        'imageIndex': graphic_data.imageIndex,
+        'omDescription': graphic_data.omDescription,
+        'omEquipment': graphic_data.omEquipment,
+        'omZoom': graphic_data.omZoom,
+        'omPhotoMod': graphic_data.omPhotoMod
+    }
+    return t
+
+
 @app.route('/api/request/img/<imgid>', methods=['GET'])
 def get_img(imgid):
     return send_file('./static/img/{}'.format(imgid), mimetype='image/jpeg')
@@ -114,6 +128,11 @@ def upload_base():
                          form['samplingPeople'], form['imageId'], form['sampleDescribe'],
                          form['sampleExplain'], form['experimentId'])
     db.session.add(new_record)
+
+    for experiment in form['experimentId']:
+        new_record = ExperimentData(experiment, form['sampleId'])
+        db.session.add(new_record)
+
     db.session.commit()
 
     return {'upload_base_status': 'success'}
@@ -131,6 +150,11 @@ def upload_phase_metal():
         'sfPhotoMod': metal_phase_data['sfPhotoMod'],
         'sfImgList': metal_phase_data['sfImgList']
     })
+
+    for img in metal_phase_data['sfImgList']:
+        new = PhaseGraphic(img)
+        db.session.add(new)
+
     db.session.commit()
 
     return {'status_code': 200}
@@ -148,6 +172,11 @@ def upload_phase_mine():
         'mpPhotoMod': mine_phase_data['mpPhotoMod'],
         'mpImgList': mine_phase_data['mpImgList']
     })
+
+    for img in mine_phase_data['mpImgList']:
+        new = PhaseGraphic(img)
+        db.session.add(new)
+
     db.session.commit()
 
     return {'status_code': 200}
@@ -165,6 +194,11 @@ def upload_phase_em():
         'emPhotoMod': em_phase_data['emPhotoMod'],
         'emImgList': em_phase_data['emImgList']
     })
+
+    for img in em_phase_data['emImgList']:
+        new = PhaseGraphic(img)
+        db.session.add(new)
+
     db.session.commit()
 
     return {'status_code': 200}
@@ -177,6 +211,20 @@ def upload_physical_porosity():
         'apparentPorosity': physical_porosity['apparentPorosity'],
         'trueDensity': physical_porosity['trueDensity'],
         'waterAbsorption': physical_porosity['waterAbsorption']
+    })
+    db.session.commit()
+
+    return {'status_code': 200}
+
+
+@app.route('/api/upload/graphic', methods=['POST'])
+def upload_graphic():
+    phase_graphic = request.get_json()
+    db.session.query(PhaseGraphic).filter(PhaseGraphic.imageIndex == phase_graphic['imageIndex']).update({
+        'omDescription': phase_graphic['omDescription'],
+        'omEquipment': phase_graphic['omEquipment'],
+        'omZoom': phase_graphic['omZoom'],
+        'omPhotoMod': phase_graphic['omPhotoMod']
     })
     db.session.commit()
 
