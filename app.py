@@ -217,6 +217,30 @@ def upload_physical_porosity():
     return {'status_code': 200}
 
 
+@app.route('/api/upload/experiment', methods=['POST'])
+def upload_experiment():
+    experiment_datas = request.get_json()
+    for i in range(len(experiment_datas['mineralContent'])):
+        mineralContent = experiment_datas['mineralContent'][i]
+        experiment_id = mineralContent.pop(u'实验编号')
+        XRDContent = experiment_datas['XRDContent'][i]
+        XRDContent.pop(u'实验编号')
+        chemicalContent = experiment_datas['chemicalContent'][i]
+        chemicalContent.pop(u'实验编号')
+        thermalPerform = experiment_datas['thermalPerform'][i]
+        thermalPerform.pop(u'实验编号')
+
+        db.session.query(ExperimentData).filter(ExperimentData.experimentId == experiment_id).update({
+            'mineralContent': mineralContent,
+            'XRDContent': XRDContent,
+            'chemicalContent': chemicalContent,
+            'thermalPerform': thermalPerform
+        })
+        db.session.commit()
+
+        return {'status_code': 200}
+
+
 @app.route('/api/upload/graphic', methods=['POST'])
 def upload_graphic():
     phase_graphic = request.get_json()

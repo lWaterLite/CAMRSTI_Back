@@ -144,6 +144,7 @@ class PhysicalPorosity(db.Model):
         }
 
 
+# 实验数据
 class ExperimentData(db.Model):
     __tablename__ = 'experiment_data'
     experimentId = db.Column('experimentId', db.Unicode(20), primary_key=True)
@@ -153,20 +154,20 @@ class ExperimentData(db.Model):
     chemicalContent = db.Column('chemicalContent', db.JSON)
     thermalPerform = db.Column('thermalPerform', db.JSON)
 
-    def __init__(self, experimentId, sampleId, mineralContent=None, XRFContent=None, chemicalContent=None,
+    def __init__(self, experimentId, sampleId, mineralContent=None, XRDContent=None, chemicalContent=None,
                  thermalPerform=None):
         if thermalPerform is None:
             thermalPerform = {}
         if chemicalContent is None:
             chemicalContent = {}
-        if XRFContent is None:
-            XRFContent = {}
+        if XRDContent is None:
+            XRDContent = {}
         if mineralContent is None:
             mineralContent = {}
         self.experimentId = experimentId
         self.sampleId = sampleId
         self.mineralContent = mineralContent
-        self.XRDContent = XRFContent
+        self.XRDContent = XRDContent
         self.chemicalContent = chemicalContent
         self.thermalPerform = thermalPerform
 
