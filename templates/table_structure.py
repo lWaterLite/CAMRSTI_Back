@@ -153,9 +153,11 @@ class ExperimentData(db.Model):
     XRDContent = db.Column('XRDContent', db.JSON)
     chemicalContent = db.Column('chemicalContent', db.JSON)
     thermalPerform = db.Column('thermalPerform', db.JSON)
+    diameterDisplay = db.Column('diameterDisplay', db.JSON)
+    cavityDisplay = db.Column('cavityDisplay', db.JSON)
 
     def __init__(self, experimentId, sampleId, mineralContent=None, XRDContent=None, chemicalContent=None,
-                 thermalPerform=None):
+                 thermalPerform=None, diameterDisplay=None, cavityDisplay=None):
         if thermalPerform is None:
             thermalPerform = {}
         if chemicalContent is None:
@@ -164,17 +166,25 @@ class ExperimentData(db.Model):
             XRDContent = {}
         if mineralContent is None:
             mineralContent = {}
+        if diameterDisplay is None:
+            diameterDisplay = {}
+        if cavityDisplay is None:
+            diameterDisplay = {}
         self.experimentId = experimentId
         self.sampleId = sampleId
         self.mineralContent = mineralContent
         self.XRDContent = XRDContent
         self.chemicalContent = chemicalContent
         self.thermalPerform = thermalPerform
+        self.diameterDisplay = diameterDisplay
+        self.cavityDisplay = cavityDisplay
 
     def to_json(self):
         return {
             'mineralContent': self.mineralContent,
             'XRDContent': self.XRDContent,
             'chemicalContent': self.chemicalContent,
-            'thermalPerform': self.thermalPerform
+            'thermalPerform': self.thermalPerform,
+            'diameterDisplay': self.diameterDisplay,
+            'cavityDisplay': self.cavityDisplay
         }

@@ -63,6 +63,7 @@ def get_base():  # put application's code here
 
 @app.route('/api/request/phase/<sampleId>', methods=['GET'])
 def get_oom(sampleId):
+    base_data = Example.query.filter_by(sampleId=sampleId).first()
     metal_phase = MetalPhase.query.filter_by(sampleId=sampleId).first()
     mine_phase = MinePhase.query.filter_by(sampleId=sampleId).first()
     em_phase = ElectronMicroPhase.query.filter_by(sampleId=sampleId).first()
@@ -70,7 +71,8 @@ def get_oom(sampleId):
     t = {'metalPhaseData': metal_phase.to_json(),
          'minePhaseData': mine_phase.to_json(),
          'emPhaseData': em_phase.to_json(),
-         'physicalPorosity': physical_porosity.to_json()
+         'physicalPorosity': physical_porosity.to_json(),
+         'baseData': base_data.to_json()
          }
     return t
 
@@ -85,6 +87,8 @@ def get_experiment(sampleId):
         data['XRDContent'][u'实验编号'] = experiment_data.experimentId
         data['chemicalContent'][u'实验编号'] = experiment_data.experimentId
         data['thermalPerform'][u'实验编号'] = experiment_data.experimentId
+        data['diameterDisplay'][u'实验编号'] = experiment_data.experimentId
+        data['cavityDisplay'][u'实验编号'] = experiment_data.experimentId
         t[experiment_data.experimentId] = data
     return t
 
@@ -236,9 +240,9 @@ def upload_experiment():
             'chemicalContent': chemicalContent,
             'thermalPerform': thermalPerform
         })
-        db.session.commit()
+    db.session.commit()
 
-        return {'status_code': 200}
+    return {'status_code': 200}
 
 
 @app.route('/api/upload/graphic', methods=['POST'])
