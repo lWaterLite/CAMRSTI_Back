@@ -233,12 +233,18 @@ def upload_experiment():
         chemicalContent.pop(u'实验编号')
         thermalPerform = experiment_datas['thermalPerform'][i]
         thermalPerform.pop(u'实验编号')
+        diameterDisplay = experiment_datas['diameterDisplay'][i]
+        diameterDisplay.pop(u'实验编号')
+        cavityDisplay = experiment_datas['cavityDisplay'][i]
+        cavityDisplay.pop(u'实验编号')
 
         db.session.query(ExperimentData).filter(ExperimentData.experimentId == experiment_id).update({
             'mineralContent': mineralContent,
             'XRDContent': XRDContent,
             'chemicalContent': chemicalContent,
-            'thermalPerform': thermalPerform
+            'thermalPerform': thermalPerform,
+            'diameterDisplay': diameterDisplay,
+            'cavityDisplay': cavityDisplay
         })
     db.session.commit()
 

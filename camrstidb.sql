@@ -178,6 +178,8 @@ CREATE TABLE `experiment_data` (
   `XRDContent` json DEFAULT NULL COMMENT 'XRD成分',
   `chemicalContent` json DEFAULT NULL COMMENT '化学成分',
   `thermalPerform` json DEFAULT NULL COMMENT '热分析',
+  `diameterDisplay` json DEFAULT NULL COMMENT '岩屑直径分布',
+  `cavityDisplay` json DEFAULT NULL COMMENT '空洞长度分布',
   PRIMARY KEY (`experimentId`),
   UNIQUE KEY `experiment_data_experimentId_uindex` (`experimentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='实验编号';
@@ -189,7 +191,7 @@ CREATE TABLE `experiment_data` (
 
 LOCK TABLES `experiment_data` WRITE;
 /*!40000 ALTER TABLE `experiment_data` DISABLE KEYS */;
-INSERT INTO `experiment_data` VALUES ('11Y1:9-1','11Y1:9','{\"\": \"\", \"test\": \"2.23\", \"石英粉砂\": 21.7, \"粘土基质\": 62.3}','{\"石英\": 57, \"钠长石\": 17}','{\"MgO\": 1.7, \"Na2O\": 1.5}','{\"耐火度\": 1254, \"终止温度\": 1089}'),('11Y1:9-2','11Y1:9','{\"石英粉砂\": 30.1, \"粘土基质\": 55.6}','{\"石英\": 57.2, \"钠长石\": 17.1}','{\"MgO\": 2.31, \"Na2O\": 1.33}','{\"耐火度\": 1200, \"终止温度\": 1100}');
+INSERT INTO `experiment_data` VALUES ('11Y1:9-1','11Y1:9','{\"test\": \"1\", \"石英粉砂\": 21.7, \"粘土基质\": 62.3}','{\"石英\": 57, \"钠长石\": 17}','{\"MgO\": 1.7, \"Na2O\": 1.5}','{\"耐火度\": 1254, \"终止温度\": 1089}','{}','{}'),('11Y1:9-2','11Y1:9','{\"test\": \"1\", \"石英粉砂\": 30.1, \"粘土基质\": 55.6}','{\"石英\": 57.2, \"钠长石\": 17.1}','{\"MgO\": 2.31, \"Na2O\": 1.33}','{\"耐火度\": 1200, \"终止温度\": 1100}','{}','{}');
 /*!40000 ALTER TABLE `experiment_data` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,4 +324,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-09-04  9:45:47
+-- Dump completed on 2022-09-04 14:41:10
